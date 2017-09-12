@@ -10,47 +10,62 @@
 <link href="${pageContext.servletContext.contextPath }/assets/css/user.css" rel="stylesheet" type="text/css">
 <script src="${pageContext.servletContext.contextPath }/assets/js/jquery/jquery-1.9.0.js" type="text/javascript"></script>
 <script>
-$( function(){
-	$( "#email" ).change( function(){
-		$( "#img-check" ).hide();
-		$( "#btn-checkemail").show();		
-	});
-	
-	$( "#btn-checkemail" ).click( function(){
-		var email = $( "#email" ).val();
+var FormValidator = {
+	$buttonCheckEmail: null,
+	$inputTextEmail:null,
+	$imgCheck: null,
+	init: function(){
+		this.$imgCheck = $( "#img-check" );
+		this.$inputTextEmail = $( "#email" );
+		this.$buttonCheckEmail = $("#btn-checkemail");
+
+		this.$inputTextEmail.change(this.onInputTextEmailChanged.bind(this));		
+		this.$buttonCheckEmail.click(this.onButtonCheckEmailClicked.bind(this));
+	},
+	onCheckEmailAjaxError: function( xhr, status, e ) {
+		console.error( status + ":" + e );
+	},
+	onCheckEmailAjaxSuccess: function( response ) {
+		if(response.result != "success"){
+			console.log( response.message );
+			return;
+		}
+		
+		if( response.data == true ) {
+			alert( "이미 사용하고 있는 email입니다." );
+			this.$inputTextEmail.
+			val( "" ).
+			focus();
+			return;
+		}
+		
+		this.$imgCheck.show();
+		this.$buttonCheckEmail.hide();		
+	},
+	onInputTextEmailChanged: function(){
+		this.$imgCheck.hide();
+		this.$buttonCheckEmail.show();		
+	},
+	onButtonCheckEmailClicked: function(){
+		var email = this.$inputTextEmail.val();
 		if( email == "" ) {
 			return;
 		}
 		
 		//ajax 통신
 		$.ajax( {
-			url: "${pageContext.servletContext.contextPath }/user?a=checkemail&email=" + email,
+			url: "${pageContext.servletContext.contextPath }/api/user/checkemail?email=" + email,
 			type: "get",
 			dataType: "json",
 			data:"",
-			success: function( response ) {
-				if(response.result != "success"){
-					console.log( response.message );
-					return;
-				}
-				
-				if( response.data == false ) {
-					alert( "이미 사용하고 있는 email입니다." );
-					$( "#email" ).
-					val( "" ).
-					focus();
-					return;
-				}
-				
-				$( "#img-check" ).show();
-				$( "#btn-checkemail").hide();
-				
-			},
-			error: function( xhr, status, e ) {
-				console.error( status + ":" + e );
-			}
+			success: this.onCheckEmailAjaxSuccess.bind(this),
+			error: this.onCheckEmailAjaxError
 		} );
-	});
+	}
+}
+
+$(function(){
+	FormValidator.init();
 });
 </script>
 </head>
