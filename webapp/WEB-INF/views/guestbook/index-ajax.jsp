@@ -17,7 +17,7 @@ var render = function( vo, mode ) {
 	var html = 
 		"<li data-no='" + vo.no + "'>" +
 		"<strong>" + vo.name + "</strong>" +
-		"<p>" + vo.content.replace("\n", "<br>") + "</p>" +
+		"<p>" + vo.content.replace(/\n/gi, "<br>") + "</p>" +
 		"<strong></strong>" +
 		"<a href='' data-no='" + vo.no + "'>삭제</a>"+ 
 		"</li>";
@@ -61,13 +61,16 @@ var fetchList = function(){
 $(function(){
 	$("#add-form").submit( function(event){
 		event.preventDefault();
-		/* ajax */
+
 		$.ajax({
 			url: "/mysite3/api/guestbook/insert",
 			type: "post",
 			dataType: "json",
-			data:"",
+			data: $( this ).serializeArray(),
 			success: function( response ){
+				render( response.data, true );
+				//reset form
+				$("#add-form")[0].reset();
 			}
 		});
 	});
@@ -87,10 +90,10 @@ $(function(){
 		<div id="content">
 			<div id="guestbook">
 				<h1>방명록</h1>
-				<form id="add-form" action="/add" method="post">
-					<input type="text" id="input-name" placeholder="이름">
-					<input type="password" id="input-password" placeholder="비밀번호">
-					<textarea id="tx-content" placeholder="내용을 입력해 주세요."></textarea>
+				<form id="add-form" action="" method="post">
+					<input type="text" id="input-name" name="name" placeholder="이름">
+					<input type="password" id="input-password" name="password" placeholder="비밀번호">
+					<textarea id="tx-content" name="content" placeholder="내용을 입력해 주세요."></textarea>
 					<input type="submit" value="보내기" />
 				</form>
 				<ul id="list-guestbook">
