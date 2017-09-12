@@ -66,7 +66,6 @@ $(function(){
 			url: "/mysite3/api/guestbook/insert",
 			type: "post",
 			dataType: "json",
-			contentType: "application/json",
 			data: $(this).serialize(),
 			success: function( response ){
 				render( response.data, true );
