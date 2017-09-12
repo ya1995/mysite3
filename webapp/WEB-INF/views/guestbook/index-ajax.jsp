@@ -61,12 +61,13 @@ var fetchList = function(){
 $(function(){
 	$("#add-form").submit( function(event){
 		event.preventDefault();
-
+		
 		$.ajax({
 			url: "/mysite3/api/guestbook/insert",
 			type: "post",
 			dataType: "json",
-			data: $( this ).serializeArray(),
+			contentType: "application/json",
+			data: $(this).serialize(),
 			success: function( response ){
 				render( response.data, true );
 				//reset form
