@@ -12,7 +12,27 @@
 <script type="text/javascript" src="${pageContext.request.contextPath }/assets/js/jquery/jquery-1.9.0.js"></script>
 <script src="https://code.jquery.com/ui/1.12.1/jquery-ui.js"></script>
 <script>
+var isEnd = false;
+var render = function( vo, mode ) {
+	var html = 
+		"<li data-no='" + vo.no + "'>" +
+		"<strong>" + vo.name + "</strong>" +
+		"<p>" + vo.content.replace("\n", "<br>") + "</p>" +
+		"<strong></strong>" +
+		"<a href='' data-no='" + vo.no + "'>삭제</a>"+ 
+		"</li>";
+	
+	if( mode == true ) {
+		$( "#list-guestbook" ).prepend( html );
+	} else {
+		$( "#list-guestbook" ).append( html );
+	}
+}
+
 var fetchList = function(){
+	if( isEnd == true ) {
+		return;
+	}
 	var startNo = $( "#list-guestbook li" ).last().data("no") || 0;
 	$.ajax({
 		url: "/mysite3/api/guestbook/list?no=" + startNo,
@@ -25,25 +45,39 @@ var fetchList = function(){
 				return;
 			}
 			
+			// 끝 감지
+			if( response.data.length < 5){
+				isEnd = true;
+				$( "#btn-next" ).prop( "disabled", true );
+			}
+			
 			$.each( response.data, function(index, vo){
-				var html = 
-					"<li data-no='" + vo.no + "'>" +
-					"<strong>" + vo.name + "</strong>" +
-					"<p>" + vo.content.replace("\n", "<br>") + "</p>" +
-					"<strong></strong>" +
-					"<a href='' data-no='" + vo.no + "'>삭제</a>"+ 
-					"</li>";
-				
-				$( "#list-guestbook" ).append( html );
+				render( vo, false );
 			});
 		}
 	});
 }
 
 $(function(){
+	$("#add-form").submit( function(event){
+		event.preventDefault();
+		/* ajax */
+		$.ajax({
+			url: "/mysite3/api/guestbook/insert",
+			type: "post",
+			dataType: "json",
+			data:"",
+			success: function( response ){
+			}
+		});
+	});
+	
 	$("#btn-next").click( function(){
 		fetchList();
 	});
+	
+	// 최초 리스트 가져오기 
+	fetchList();
 });
 </script>
 </head>
@@ -53,7 +87,7 @@ $(function(){
 		<div id="content">
 			<div id="guestbook">
 				<h1>방명록</h1>
-				<form id="add-form" action="" method="post">
+				<form id="add-form" action="/add" method="post">
 					<input type="text" id="input-name" placeholder="이름">
 					<input type="password" id="input-password" placeholder="비밀번호">
 					<textarea id="tx-content" placeholder="내용을 입력해 주세요."></textarea>
