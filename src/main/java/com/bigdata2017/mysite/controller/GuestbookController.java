@@ -29,6 +29,11 @@ public class GuestbookController {
 		return "guestbook/list";
 	}
 	
+	@RequestMapping( "/ajax" )
+	public String ajax() {
+		return "guestbook/index-ajax";
+	}
+	
 	@RequestMapping(
 		value="/delete/{no}", 
 		method=RequestMethod.GET)

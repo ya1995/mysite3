@@ -15,12 +15,52 @@ var FormValidator = {
 	$inputTextEmail:null,
 	$imgCheck: null,
 	init: function(){
-		this.$imgCheck = $( "#img-check" );
-		this.$inputTextEmail = $( "#email" );
+		this.$imgCheck = $("#img-check");
+		this.$inputTextEmail = $("#email");
 		this.$buttonCheckEmail = $("#btn-checkemail");
 
 		this.$inputTextEmail.change(this.onInputTextEmailChanged.bind(this));		
 		this.$buttonCheckEmail.click(this.onButtonCheckEmailClicked.bind(this));
+		$( "#join-form" ).submit( this.onJoinFormSubmit.bind(this));
+	},
+	onJoinFormSubmit: function(){
+		//이름
+		var $inputTextName = $("#name");
+		if( $inputTextName.val() === '' ) {
+			alert( "이름은 필수 항목입니다." );
+			$inputTextName.focus();
+			return false;
+		}
+		
+		//이메일
+		if( this.$inputTextEmail.val() === '' ){
+			alert( "이메일은 필수 항목입니다." );
+			this.$inputTextEmail.focus();
+			return false;
+		}
+		
+		// 이메일 중복 체크
+		if( this.$imgCheck.is(":visible") == false){
+			alert( "이메일 중복 체크를 해 주세요." );
+			return false;
+		}
+		
+		// 비밀번호
+		var $inputPassword = $("#password");
+		if( $inputPassword.val() === '' ){
+			alert( "비밀번호는 필수 항목입니다." );
+			$inputPassword.focus();
+			return false;			
+		}
+		
+		//약관 동의
+		var $inputCheckAgree = $("#agree-prov");
+		if( $inputCheckAgree.is( ":checked" ) == false ) {
+			alert( "약관 동의를 해 주세요" );
+			return false;
+		}
+		
+		return true;
 	},
 	onCheckEmailAjaxError: function( xhr, status, e ) {
 		console.error( status + ":" + e );
@@ -85,7 +125,7 @@ $(function(){
 					<input id="btn-checkemail" type="button" value="중복체크">
 					
 					<label class="block-label">패스워드</label>
-					<input name="password" type="password" value="">
+					<input id="password" name="password" type="password" value="">
 					
 					<fieldset>
 						<legend>성별</legend>

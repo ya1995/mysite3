@@ -12,6 +12,11 @@ import com.bigdata2017.mysite.vo.GuestbookVo;
 public class GuestbookService {
 	@Autowired
 	private GuestbookDao guestbookDao;
+
+	public List<GuestbookVo> getMessageList(Long no){
+		List<GuestbookVo> list = guestbookDao.getList(no);
+		return list;
+	}
 	
 	public List<GuestbookVo> getMessageList(){
 		List<GuestbookVo> list = guestbookDao.getList();
