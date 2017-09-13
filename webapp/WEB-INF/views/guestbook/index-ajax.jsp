@@ -90,12 +90,46 @@ $(function(){
 		modal: true,
 		buttons: {
 			"삭제": function(){
-				console.log( "삭제!!!!" );
-				$(this).dialog("close");
+				var password = $("#password-delete").val(); 
+				var no = $("#hidden-no").val();
+				console.log( "삭제:" + no + ":" + password );
+				
+				//ajax 통신
+				$.ajax({
+					url: "/mysite3/api/guestbook/delete",
+					type: "post",
+					dataType: "json",
+					data: "no=" + no + "&password=" + password,
+					success: function( response ) {
+						if( response.result == "fail" ) {
+							console.log( response.message );
+							return;
+						}
+						
+						if( response.data == -1 ) {
+							$( ".validateTips.normal" ).hide();
+							$( ".validateTips.error" ).show();
+							$( "#password-delete" ).val( "" );
+							return;
+						}
+						
+						$( "#list-guestbook li[data-no=" + response.data + "]" ).remove();
+						deleteDialog.dialog( "close" );
+					},
+					error: function( xhr, status, e){
+						console.error( status + ":" + e );
+					}
+				});
+				
+//				$(this).dialog("close");
 			},
 			"취소": function(){
 				$(this).dialog("close");
 			}
+		},
+		close: function(){
+			$("#password-delete").val( "" );
+			$("#hidden-no").val( "" );
 		}
 	});
 	
@@ -173,8 +207,11 @@ $(function(){
 	// live event 
 	$( document ).on( "click", "#list-guestbook li a", function(event){
 		event.preventDefault();
+		
+		var no = $(this).data( "no" );
+		$( "#hidden-no" ).val( no );
+		
 		deleteDialog.dialog( "open" );
-		console.log( "clicked" );
 	});
 	
 	// 최초 리스트 가져오기 
