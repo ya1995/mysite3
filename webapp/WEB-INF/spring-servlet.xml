@@ -34,6 +34,22 @@
 		</mvc:message-converters>
 	</mvc:annotation-driven>
 
+   <!-- Interceptors -->
+    <mvc:interceptors>
+        <!--mvc:interceptor>
+        	<mvc:mapping path="/guestbook/**" /> 
+    		<bean class="com.bigdata2017.mysite.interceptor.MyInterceptor02" />
+        </mvc:interceptor-->
+        <mvc:interceptor>
+        	<mvc:mapping path="/user/auth"/>
+        	<bean class="com.bigdata2017.security.AuthLoginInterceptor"/>
+        </mvc:interceptor>
+        <mvc:interceptor>
+        	<mvc:mapping path="/user/logout"/>
+        	<bean class="com.bigdata2017.security.AuthLogoutInterceptor"/>
+        </mvc:interceptor>
+    </mvc:interceptors>
+
 
 	<!-- 서블릿 컨테이너의 디폴트 서블릿 위임 핸들러 -->
 	<mvc:default-servlet-handler/>
