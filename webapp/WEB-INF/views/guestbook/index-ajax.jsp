@@ -61,12 +61,27 @@ var fetchList = function(){
 $(function(){
 	$("#add-form").submit( function(event){
 		event.preventDefault();
+		//var queryString = $(this).serialize();
+		/*
+		var o = {
+			"name": $("#input-name").val(),
+			"password": $("#input-password").val(),
+			"content": $("#tx-content").val()
+		};
+		*/
+		
+		var data = {};
+		$.each($(this).serializeArray(), function(index, o){
+			data[ o.name ] = o.value
+		});
+		console.log( data );
 		
 		$.ajax({
 			url: "/mysite3/api/guestbook/insert",
 			type: "post",
 			dataType: "json",
-			data: $(this).serialize(),
+			contentType: "application/json",
+			data: JSON.stringify( data ),
 			success: function( response ){
 				render( response.data, true );
 				//reset form

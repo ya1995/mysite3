@@ -33,8 +33,9 @@ public class GuestbookController {
 	@ResponseBody
 	@RequestMapping("/insert")
 	public JSONResult insert(
-			@ModelAttribute GuestbookVo guestbookVo) {
-		guestbookService.insertMessage(guestbookVo);
+		@RequestBody GuestbookVo guestbookVo) {
+		System.out.println( guestbookVo );
+		//guestbookService.insertMessage(guestbookVo);
 		return JSONResult.success(guestbookVo);
 	}
 	
