@@ -11,8 +11,32 @@
 <link rel="stylesheet" href="https://code.jquery.com/ui/1.12.1/themes/base/jquery-ui.css">
 <script type="text/javascript" src="${pageContext.request.contextPath }/assets/js/jquery/jquery-1.9.0.js"></script>
 <script src="https://code.jquery.com/ui/1.12.1/jquery-ui.js"></script>
+
+<script>
+// jquery PlugIn
+(function($){
+	$.fn.hello = function(){
+		console.log( $(this).attr("id") + ": hello~");
+	}
+})(jQuery);
+</script>
+
 <script>
 var isEnd = false;
+var messageBox = function(title, message, callback){
+	$( "#dialog-message" ).attr( "title", title );
+	$( "#dialog-message p" ).text( message );
+	$( "#dialog-message" ).dialog({
+		modal: true,
+		buttons: {
+			"확인": function(){
+				$(this).dialog("close");
+			}
+		},
+		close: callback || function(){}
+	});
+}
+
 var render = function( vo, mode ) {
 	var html = 
 		"<li data-no='" + vo.no + "'>" +
@@ -26,6 +50,7 @@ var render = function( vo, mode ) {
 		$( "#list-guestbook" ).prepend( html );
 	} else {
 		$( "#list-guestbook" ).append( html );
+		
 	}
 }
 
@@ -59,6 +84,37 @@ var fetchList = function(){
 }
 
 $(function(){
+	// 삭제 시 비밀번호 입력 다이알로그 정의
+	var deleteDialog = $("#dialog-delete-form").dialog({
+		autoOpen: false,
+		modal: true,
+		buttons: {
+			"삭제": function(){
+				console.log( "삭제!!!!" );
+				$(this).dialog("close");
+			},
+			"취소": function(){
+				$(this).dialog("close");
+			}
+		}
+	});
+	
+	$( window ).scroll( function(){
+		var $window = $(this);
+		var scrollTop = $window.scrollTop();
+		var windowHeight = $window.height();
+		var documentHeight = $( document ).height();
+		
+		//console.log( 
+		//	scrollTop + ":" + 
+		//	windowHeight + ":" + 
+		//	documentHeight );
+		// scollbar의 thumb가 바닥 전 30px 까지 도달 했을 때
+		if( scrollTop + windowHeight + 30 > documentHeight ) {
+			fetchList();
+		}
+	});
+	
 	$("#add-form").submit( function(event){
 		event.preventDefault();
 		//var queryString = $(this).serialize();
@@ -69,6 +125,26 @@ $(function(){
 			"content": $("#tx-content").val()
 		};
 		*/
+		if($("#input-name").val() === ''){
+			//$( "#dialog-message" ).dialog();
+			messageBox( 
+				"메세지 등록", 
+				"이름이 비어 있습니다.",
+				function(){
+					$("#input-name").focus();
+				});
+			return;
+		}
+		
+		if($("#input-password").val() === ''){
+			messageBox( 
+				"메세지 등록", 
+				"비밀번호가 비어 있습니다.",
+				function(){
+					$("#input-password").focus();
+				});
+			return;
+		}
 		
 		var data = {};
 		$.each($(this).serializeArray(), function(index, o){
@@ -94,8 +170,17 @@ $(function(){
 		fetchList();
 	});
 	
+	// live event 
+	$( document ).on( "click", "#list-guestbook li a", function(event){
+		event.preventDefault();
+		deleteDialog.dialog( "open" );
+		console.log( "clicked" );
+	});
+	
 	// 최초 리스트 가져오기 
 	fetchList();
+	
+	$("#content").hello();
 });
 </script>
 </head>
@@ -130,7 +215,7 @@ $(function(){
 			</div>
 			<div id="dialog-message" title="" style="display:none">
   				<p></p>
-			</div>						
+			</div>
 		</div>
 		<c:import url="/WEB-INF/views/includes/navigation.jsp">
 			<c:param name="menu" value="guestbook-ajax"/>
