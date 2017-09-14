@@ -58,12 +58,25 @@ public class AuthInterceptor extends HandlerInterceptorAdapter {
 			return false;
 		}
 
+		//6. Role 가져오기
 		Auth.Role role = auth.role();
-
 		
+		//7. User Role 접근이면 인증되어 있기 때문에
+		//   허용
+		if( role == Auth.Role.USER ) {
+			return true;
+		}
 		
+		// 8. Admin Role 접근 체크
+		// 'ADMIN' 권한이 없는 사용자면
+		// main 화면으로 리다이렉트
+		if( authUser.getRole().equals( "ADMIN" ) == false ) {
+			response.sendRedirect( request.getContextPath() );
+			return false;
+		}
+		
+		//9. Admin Role 접근 허용
 		return true;
-		
 	}
 
 }
