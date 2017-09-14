@@ -23,5 +23,10 @@ public class AdminController {
 	@RequestMapping("/board")
 	public String board() {
 		return "admin/board";
+	}
+	
+	@RequestMapping("/user")
+	public String user() {
+		return "admin/user";
 	}	
 }

@@ -36,7 +36,9 @@
 
 				</div>
 			</div>
-			<c:import url="/WEB-INF/views/admin/include/navigation.jsp" />
+			<c:import url="/WEB-INF/views/admin/include/navigation.jsp">
+				<c:param name="menu" value="main"/>
+			</c:import>
 		</div>
 	</div>
 </body>
