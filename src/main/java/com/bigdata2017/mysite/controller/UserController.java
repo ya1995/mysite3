@@ -1,7 +1,5 @@
 package com.bigdata2017.mysite.controller;
 
-import javax.servlet.http.HttpSession;
-
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.ModelAttribute;
@@ -9,7 +7,6 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
 
 import com.bigdata2017.mysite.service.UserService;
-import com.bigdata2017.mysite.vo.GuestbookVo;
 import com.bigdata2017.mysite.vo.UserVo;
 import com.bigdata2017.security.Auth;
 import com.bigdata2017.security.AuthUser;
@@ -41,7 +38,7 @@ public class UserController {
 		return "user/login";
 	}
 	
-	@Auth(role="user")
+	@Auth(role=Auth.Role.USER)
 	@RequestMapping( value="/modify", method=RequestMethod.GET )
 	public String modify(@AuthUser UserVo authUser) {
 		System.out.println( authUser );

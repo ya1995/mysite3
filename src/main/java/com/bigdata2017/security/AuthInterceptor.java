@@ -34,9 +34,9 @@ public class AuthInterceptor extends HandlerInterceptorAdapter {
 		//   Class(Type)에 붙에 있는 @Auth 받아오기
 		if( auth == null ) {
 			auth = handlerMethod.
-				getMethod().
-			getDeclaringClass().
-			getAnnotation( Auth.class);
+				   getMethod().
+			       getDeclaringClass().
+			       getAnnotation(Auth.class);
 		}
 		
 		//5. @Auth가 안붙어 있는 경우
@@ -52,13 +52,15 @@ public class AuthInterceptor extends HandlerInterceptorAdapter {
 			return false;
 		}
 		
-		String role = auth.role();
-		
 		UserVo authUser = (UserVo)session.getAttribute("authUser");
 		if( authUser == null ) { // 인증이 안되어 있음
 			response.sendRedirect( request.getContextPath() + "/user/login" );
 			return false;
 		}
+
+		Auth.Role role = auth.role();
+
+		
 		
 		return true;
 		

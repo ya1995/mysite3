@@ -6,7 +6,7 @@
 			parameterType="map"
 			resultType="uservo">
 		<![CDATA[
-		select no, name 
+		select no, name, role 
 		  from member 
 		 where email=#{email }
 		   and password=#{password }
@@ -60,7 +60,8 @@
 	    		#{password },
 	    		#{email },
 	    		#{gender },
-	    		sysdate)
+	    		sysdate,
+	    		'USER')
 	    ]]>		
 	</insert>
 </mapper>
