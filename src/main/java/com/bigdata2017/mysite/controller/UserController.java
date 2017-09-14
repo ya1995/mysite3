@@ -2,6 +2,7 @@ package com.bigdata2017.mysite.controller;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
+import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.ModelAttribute;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
@@ -38,11 +39,28 @@ public class UserController {
 		return "user/login";
 	}
 	
-	@Auth(role=Auth.Role.USER)
+	@Auth
 	@RequestMapping( value="/modify", method=RequestMethod.GET )
-	public String modify(@AuthUser UserVo authUser) {
-		System.out.println( authUser );
+	public String modify(
+		@AuthUser UserVo authUser,
+		Model model) {
 		UserVo userVo = userService.getUser( authUser.getNo() );
+		model.addAttribute("userVo", userVo);
 		return "user/modify";
 	}
+	
+	@Auth(role=Auth.Role.USER)
+	@RequestMapping(value="/modify", method=RequestMethod.POST)
+	public String modify(
+		@AuthUser UserVo authUser,
+		@ModelAttribute UserVo userVo) {
+		userVo.setNo(authUser.getNo());
+		userService.modifyUser(userVo);
+		
+		//authUser 변경(화면변경)
+		authUser.setName(userVo.getName());
+		
+		return "redirect:/user/modify?update=success";
+	}
+	
 }
