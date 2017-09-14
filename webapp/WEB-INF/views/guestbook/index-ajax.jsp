@@ -234,8 +234,6 @@ $(function(){
 					<input type="submit" value="보내기" />
 				</form>
 				<ul id="list-guestbook">
-
-
 				</ul>
 				<div style="text-align:center;padding:20px">
 					<button id="btn-next" style="padding:10px 20px">다음</button>

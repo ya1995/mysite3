@@ -78,5 +78,4 @@ public class AuthInterceptor extends HandlerInterceptorAdapter {
 		//9. Admin Role 접근 허용
 		return true;
 	}
-
 }
