@@ -12,7 +12,9 @@ import org.springframework.web.bind.annotation.RequestMethod;
 
 import com.bigdata2017.mysite.service.GuestbookService;
 import com.bigdata2017.mysite.vo.GuestbookVo;
+import com.bigdata2017.security.Auth;
 
+@Auth
 @Controller
 @RequestMapping( "/guestbook" )
 public class GuestbookController {

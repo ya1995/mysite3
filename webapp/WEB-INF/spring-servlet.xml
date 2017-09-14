@@ -13,6 +13,8 @@
 
 	<!-- validator, conversionService, messageConverter를 자동으로 등록 -->
 	<mvc:annotation-driven>
+	
+		<!-- Message Converter -->
 		<mvc:message-converters>
 			
 			<bean class="org.springframework.http.converter.StringHttpMessageConverter">
@@ -32,6 +34,12 @@
 			</bean>
 			
 		</mvc:message-converters>
+		
+	     <!-- argument resolver -->
+	     <mvc:argument-resolvers>
+		 	<bean class="com.bigdata2017.security.AuthUserHandlerMethodArgumentResolver"/>           
+	     </mvc:argument-resolvers>
+		
 	</mvc:annotation-driven>
 
    <!-- Interceptors -->
@@ -47,6 +55,13 @@
         <mvc:interceptor>
         	<mvc:mapping path="/user/logout"/>
         	<bean class="com.bigdata2017.security.AuthLogoutInterceptor"/>
+        </mvc:interceptor>
+        <mvc:interceptor>
+        	<mvc:mapping path="/**"/>
+        	<mvc:exclude-mapping path="/user/auth"/>
+        	<mvc:exclude-mapping path="/user/logout"/>
+        	<mvc:exclude-mapping path="/assets/**"/>
+        	<bean class="com.bigdata2017.security.AuthInterceptor"/>
         </mvc:interceptor>
     </mvc:interceptors>
 
