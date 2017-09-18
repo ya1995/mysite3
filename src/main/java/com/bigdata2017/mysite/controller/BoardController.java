@@ -129,7 +129,7 @@ public class BoardController {
 	
 	@Auth
 	@RequestMapping( value="/write", method=RequestMethod.POST )
-	public String write(
+	public String write( 
 		@AuthUser UserVo authUser, 
 		@ModelAttribute BoardVo vo,
 		@RequestParam( value="p", required=true, defaultValue="1") Integer page,
