@@ -1,12 +1,13 @@
 package com.bigdata2017.mysite.exception;
 
-import java.io.OutputStream;
 import java.io.PrintWriter;
 import java.io.StringWriter;
 
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 
+import org.apache.commons.logging.Log;
+import org.apache.commons.logging.LogFactory;
 import org.springframework.web.bind.annotation.ControllerAdvice;
 import org.springframework.web.bind.annotation.ExceptionHandler;
 
@@ -15,6 +16,8 @@ import com.fasterxml.jackson.databind.ObjectMapper;
 
 @ControllerAdvice
 public class GlobalExceptionHandler {
+	
+	private static final Log LOG = LogFactory.getLog( GlobalExceptionHandler.class );
 
 	@ExceptionHandler( Exception.class )
 	public void handlerException(
@@ -26,13 +29,7 @@ public class GlobalExceptionHandler {
 		//1. 로깅(파일, DB)
 		StringWriter errors = new StringWriter();
 		e.printStackTrace(new PrintWriter(errors) );
-		//log.error( errors.toString() );
-		
-		//2. 사과 페이지 안내
-		//ModelAndView mav = new ModelAndView();
-		//mav.addObject( "exception", errors.toString() );
-		//mav.setViewName( "error/exception" );
-		//return mav;
+		LOG.error( errors.toString() );
 		
 		String accept = request.getHeader( "accept" );
 		if( accept.matches( ".*application/json.*" ) ) {
@@ -44,7 +41,6 @@ public class GlobalExceptionHandler {
 			response.getWriter().print( json );
 		} else {
 			// 사과 페이지
-			request.setAttribute( "exception", errors.toString() );
 			request.
 			getRequestDispatcher( "/WEB-INF/views/error/exception.jsp" ).
 			forward( request, response );
